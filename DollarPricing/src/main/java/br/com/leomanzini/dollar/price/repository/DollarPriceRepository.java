@@ -1,4 +1,4 @@
-package br.com.leomanzini.dollar.price.service;
+package br.com.leomanzini.dollar.price.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

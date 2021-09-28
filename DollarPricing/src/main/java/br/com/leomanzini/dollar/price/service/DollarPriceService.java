@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 
 import br.com.leomanzini.dollar.price.dto.DollarResponse;
+import br.com.leomanzini.dollar.price.repository.DollarPriceRepository;
 import br.com.leomanzini.dollar.price.utils.Convert;
 import br.com.leomanzini.dollar.price.utils.PropertiesLoader;
 
