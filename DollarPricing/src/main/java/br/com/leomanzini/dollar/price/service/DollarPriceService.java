@@ -5,21 +5,16 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
-import br.com.leomanzini.dollar.price.dto.DollarResponse;
-import br.com.leomanzini.dollar.price.repository.DollarPriceRepository;
+import br.com.leomanzini.dollar.price.dto.response.DollarResponse;
 import br.com.leomanzini.dollar.price.utils.Convert;
 import br.com.leomanzini.dollar.price.utils.PropertiesLoader;
 
 @Service
 public class DollarPriceService {
-	
-	@Autowired
-	private DollarPriceRepository dollarRepository;
 	
 	public DollarResponse getRealTimeDollarPrice() throws Exception {
 		

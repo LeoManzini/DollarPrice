@@ -10,8 +10,8 @@ public abstract class PropertiesLoader {
 	
 	private static final Logger LOG = LogManager.getLogger(PropertiesLoader.class);
 
-	private static final String PROPERTIES_REAL_TIME_URL = "real.time.dollar.price.url";
-	private static final String PROPERTIES_HISTORY_URL = "history.dollar.price.url";
+	private static final String PROPERTIES_REAL_TIME_URL = "real.time.dollar.price";
+	private static final String PROPERTIES_HISTORY_URL = "history.dollar.price";
 	private static final String PROPERTIES_PATH = "src/main/resources/application.properties";
 
 	private static String realTimeUrl;
