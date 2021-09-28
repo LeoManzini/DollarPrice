@@ -25,5 +25,8 @@ public class RealTimeDollarEntity {
 	@Column(name = "quote_id")
 	private Long id;
 	
-	
+	private String code;
+	private String codein;
+	private String bid;
+    private String stamp;
 }

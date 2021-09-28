@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -14,29 +15,37 @@ import com.google.gson.reflect.TypeToken;
 
 import br.com.leomanzini.dollar.price.dto.response.HistoryDollarResponse;
 import br.com.leomanzini.dollar.price.dto.response.RealTimeDollarResponse;
+import br.com.leomanzini.dollar.price.entity.RealTimeDollarEntity;
 import br.com.leomanzini.dollar.price.enums.ReturnCodes;
 import br.com.leomanzini.dollar.price.exceptions.GeneralException;
 import br.com.leomanzini.dollar.price.exceptions.HistoryDollarPriceException;
 import br.com.leomanzini.dollar.price.exceptions.RealTimeDollarPriceException;
+import br.com.leomanzini.dollar.price.repository.RealTimeDollarRepository;
 import br.com.leomanzini.dollar.price.utils.Convert;
 import br.com.leomanzini.dollar.price.utils.PropertiesLoader;
 
 @Service
 public class DollarPriceService {
 
+	@Autowired
+	private RealTimeDollarRepository dollarRepository;
+
 	public RealTimeDollarResponse getRealTimeDollarPrice() throws Exception {
 
 		try {
 			loadProperties();
-			
+
 			HttpURLConnection connection = getServiceConnection(PropertiesLoader.getRealTimeUrl());
 
 			String jsonToString = getServiceString(connection);
 
 			RealTimeDollarResponse returnObject = getGsonRealTimeDollarPriceResponse(jsonToString);
+			RealTimeDollarEntity saveObject = persistPrice(returnObject);
+
+			dollarRepository.save(saveObject);
 
 			return returnObject;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RealTimeDollarPriceException(ReturnCodes.RETURN_REAL_TIME_ERROR.getCode());
@@ -58,7 +67,7 @@ public class DollarPriceService {
 			List<HistoryDollarResponse> returnObject = getGsonHistoryDollarPriceResponse(jsonToString);
 
 			return returnObject;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new HistoryDollarPriceException(ReturnCodes.RETURN_HISTORY_ERROR.getCode());
@@ -70,45 +79,53 @@ public class DollarPriceService {
 	}
 
 	private HttpURLConnection getServiceConnection(String serviceUrl) throws Exception {
-		
+
 		try {
 			URL url = new URL(serviceUrl);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			
+
 			if (connection.getResponseCode() != 200) {
 				throw new RuntimeException("HTTP error code : " + connection.getResponseCode());
 			}
-			
+
 			return connection;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new GeneralException();
 		}
 	}
-	
+
 	private String getServiceString(HttpURLConnection connection) throws Exception {
-		
+
 		try {
 			BufferedReader response = new BufferedReader(new InputStreamReader((connection.getInputStream())));
 			String jsonToString = Convert.jsonIntoString(response);
-			
+
 			return jsonToString;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new GeneralException();
 		}
 	}
-	
+
 	private RealTimeDollarResponse getGsonRealTimeDollarPriceResponse(String jsonToString) {
 		Gson gson = new Gson();
 		return gson.fromJson(jsonToString, RealTimeDollarResponse.class);
 	}
-	
+
 	private List<HistoryDollarResponse> getGsonHistoryDollarPriceResponse(String jsonToString) {
 		Gson gson = new Gson();
-		Type listType = new TypeToken<List<HistoryDollarResponse>>() {}.getType();
+		Type listType = new TypeToken<List<HistoryDollarResponse>>() {
+		}.getType();
 		return gson.fromJson(jsonToString, listType);
+	}
+
+	private RealTimeDollarEntity persistPrice(RealTimeDollarResponse objectToSave) {
+		return RealTimeDollarEntity.builder().code(objectToSave.getUSDBRL().getCode())
+				.codein(objectToSave.getUSDBRL().getCodein())
+				.bid(objectToSave.getUSDBRL().getBid())
+				.stamp(objectToSave.getUSDBRL().getTimestamp()).build();
 	}
 }
