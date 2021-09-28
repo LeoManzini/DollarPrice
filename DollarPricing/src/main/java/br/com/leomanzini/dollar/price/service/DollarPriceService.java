@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +86,7 @@ public class DollarPriceService {
 			URL url = new URL(serviceUrl);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-			if (connection.getResponseCode() != 200) {
+			if (connection.getResponseCode() != ReturnCodes.CONSULT_SUCCESS.getCode()) {
 				throw new RuntimeException("HTTP error code : " + connection.getResponseCode());
 			}
 
@@ -127,5 +129,20 @@ public class DollarPriceService {
 				.codein(objectToSave.getUSDBRL().getCodein())
 				.bid(objectToSave.getUSDBRL().getBid())
 				.stamp(objectToSave.getUSDBRL().getTimestamp()).build();
+	}
+	
+	private List<RealTimeDollarEntity> persistHistoryPrice(List<HistoryDollarResponse> listToSave) {
+		// criar nova entidade para salvar esses dados historicos
+		List<RealTimeDollarEntity> returnList = new ArrayList<>();
+		Iterator<HistoryDollarResponse> listIterator = listToSave.iterator();
+		
+		while(listIterator.hasNext()) {
+			returnList.add(RealTimeDollarEntity.builder().code("USD")
+				.codein("BRL")
+				.bid(listIterator.next().getBid())
+				.stamp(listIterator.next().getTimestamp()).build());
+		}
+		
+		return returnList;
 	}
 }
