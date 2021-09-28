@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DollarResponse {
+public class RealTimeDollarResponse {
 	
 	private UsdBrl USDBRL;
 }

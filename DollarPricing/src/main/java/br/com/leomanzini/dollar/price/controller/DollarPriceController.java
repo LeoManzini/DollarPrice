@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.leomanzini.dollar.price.dto.response.DollarResponse;
+import br.com.leomanzini.dollar.price.dto.response.RealTimeDollarResponse;
 import br.com.leomanzini.dollar.price.service.DollarPriceService;
 
 @RestController
@@ -16,7 +16,7 @@ public class DollarPriceController {
 	private DollarPriceService dollarService;
 	
 	@GetMapping
-	public DollarResponse getRealTimeDollarPrice() throws Exception {
+	public RealTimeDollarResponse getRealTimeDollarPrice() throws Exception {
 		return dollarService.getRealTimeDollarPrice();
 	}
 }
