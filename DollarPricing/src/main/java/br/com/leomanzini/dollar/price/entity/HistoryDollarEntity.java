@@ -17,16 +17,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "realtime")
-public class RealTimeDollarEntity {
+@Table(name = "history")
+public class HistoryDollarEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "quote_id")
 	private Long id;
 	
-	private String code;
-	private String codein;
+	private String variation;
 	private String price;
 	
 	@Column(name = "date_time")

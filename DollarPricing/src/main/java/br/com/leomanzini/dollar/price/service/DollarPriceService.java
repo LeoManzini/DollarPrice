@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +16,13 @@ import com.google.gson.reflect.TypeToken;
 
 import br.com.leomanzini.dollar.price.dto.response.HistoryDollarResponse;
 import br.com.leomanzini.dollar.price.dto.response.RealTimeDollarResponse;
+import br.com.leomanzini.dollar.price.entity.HistoryDollarEntity;
 import br.com.leomanzini.dollar.price.entity.RealTimeDollarEntity;
 import br.com.leomanzini.dollar.price.enums.ReturnCodes;
 import br.com.leomanzini.dollar.price.exceptions.GeneralException;
 import br.com.leomanzini.dollar.price.exceptions.HistoryDollarPriceException;
 import br.com.leomanzini.dollar.price.exceptions.RealTimeDollarPriceException;
+import br.com.leomanzini.dollar.price.repository.HistoryDollarRepository;
 import br.com.leomanzini.dollar.price.repository.RealTimeDollarRepository;
 import br.com.leomanzini.dollar.price.utils.Convert;
 import br.com.leomanzini.dollar.price.utils.PropertiesLoader;
@@ -30,7 +31,10 @@ import br.com.leomanzini.dollar.price.utils.PropertiesLoader;
 public class DollarPriceService {
 
 	@Autowired
-	private RealTimeDollarRepository dollarRepository;
+	private RealTimeDollarRepository realTimeDollarRepository;
+	
+	@Autowired
+	private HistoryDollarRepository historyDollarRepository;
 
 	public RealTimeDollarResponse getRealTimeDollarPrice() throws Exception {
 
@@ -44,7 +48,7 @@ public class DollarPriceService {
 			RealTimeDollarResponse returnObject = getGsonRealTimeDollarPriceResponse(jsonToString);
 			RealTimeDollarEntity saveObject = persistPrice(returnObject);
 
-			dollarRepository.save(saveObject);
+			realTimeDollarRepository.save(saveObject);
 
 			return returnObject;
 
@@ -67,6 +71,9 @@ public class DollarPriceService {
 			String jsonToString = getServiceString(connection);
 
 			List<HistoryDollarResponse> returnObject = getGsonHistoryDollarPriceResponse(jsonToString);
+			List<HistoryDollarEntity> saveObject = persistHistoryPrice(returnObject);
+			
+			historyDollarRepository.saveAll(saveObject);
 
 			return returnObject;
 
@@ -127,20 +134,18 @@ public class DollarPriceService {
 	private RealTimeDollarEntity persistPrice(RealTimeDollarResponse objectToSave) {
 		return RealTimeDollarEntity.builder().code(objectToSave.getUSDBRL().getCode())
 				.codein(objectToSave.getUSDBRL().getCodein())
-				.bid(objectToSave.getUSDBRL().getBid())
-				.stamp(objectToSave.getUSDBRL().getTimestamp()).build();
+				.price(objectToSave.getUSDBRL().getBid())
+				.timestamp(objectToSave.getUSDBRL().getTimestamp()).build();
 	}
 	
-	private List<RealTimeDollarEntity> persistHistoryPrice(List<HistoryDollarResponse> listToSave) {
-		// criar nova entidade para salvar esses dados historicos
-		List<RealTimeDollarEntity> returnList = new ArrayList<>();
-		Iterator<HistoryDollarResponse> listIterator = listToSave.iterator();
+	private List<HistoryDollarEntity> persistHistoryPrice(List<HistoryDollarResponse> listToSave) {
+
+		List<HistoryDollarEntity> returnList = new ArrayList<>();
 		
-		while(listIterator.hasNext()) {
-			returnList.add(RealTimeDollarEntity.builder().code("USD")
-				.codein("BRL")
-				.bid(listIterator.next().getBid())
-				.stamp(listIterator.next().getTimestamp()).build());
+		for(HistoryDollarResponse dollarResponse : listToSave) {
+			returnList.add(HistoryDollarEntity.builder().variation(dollarResponse.getPctChange())
+					.price(dollarResponse.getBid())
+					.timestamp(dollarResponse.getTimestamp()).build());
 		}
 		
 		return returnList;
