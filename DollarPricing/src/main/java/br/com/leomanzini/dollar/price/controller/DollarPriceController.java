@@ -16,7 +16,7 @@ public class DollarPriceController {
 	private DollarPriceService dollarService;
 	
 	@GetMapping
-	public DollarResponse getDollarPrice() {
-		return dollarService.getPrice(null);
+	public DollarResponse getRealTimeDollarPrice() {
+		return dollarService.getRealTimeDollarPrice(null);
 	}
 }
