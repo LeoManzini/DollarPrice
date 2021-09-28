@@ -74,8 +74,7 @@ public class DollarPriceService {
 			GsonBuilder gsonBuilder = new GsonBuilder();
 			gsonBuilder.setDateFormat(DB_JSON_FORMATE_1);
 			Gson gson = gsonBuilder.create();
-			Type listType = new TypeToken<List<HistoryDollarResponse>>() {
-			}.getType();
+			Type listType = new TypeToken<List<HistoryDollarResponse>>() {}.getType();
 			List<HistoryDollarResponse> historyDollarResponse = gson.fromJson(jsonToString, listType);
 
 			return historyDollarResponse;

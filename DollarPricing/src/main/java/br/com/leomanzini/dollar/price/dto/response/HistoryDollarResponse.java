@@ -14,4 +14,5 @@ public class HistoryDollarResponse {
 	private String pctChange;
 	private String bid;
 	private String timestamp;
+	private String create_date;
 }
