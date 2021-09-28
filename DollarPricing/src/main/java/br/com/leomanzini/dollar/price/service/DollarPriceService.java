@@ -66,14 +66,7 @@ public class DollarPriceService {
 			BufferedReader response = new BufferedReader(new InputStreamReader((connection.getInputStream())));
 			String jsonToString = Convert.jsonIntoString(response);
 
-//			Gson gson = new Gson();
-//			HistoryDollarResponse returnObject = gson.fromJson(jsonToString, HistoryDollarResponse.class); //error
-
-			String DB_JSON_FORMATE_1 = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-
-			GsonBuilder gsonBuilder = new GsonBuilder();
-			gsonBuilder.setDateFormat(DB_JSON_FORMATE_1);
-			Gson gson = gsonBuilder.create();
+			Gson gson = new Gson();
 			Type listType = new TypeToken<List<HistoryDollarResponse>>() {}.getType();
 			List<HistoryDollarResponse> historyDollarResponse = gson.fromJson(jsonToString, listType);
 
