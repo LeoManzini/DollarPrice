@@ -29,14 +29,14 @@ public class DollarPriceService {
 	        }
 	
 	        BufferedReader response = new BufferedReader(new InputStreamReader((connection.getInputStream())));
-	        String jsonEmString = Convert.jsonIntoString(response);
+	        String jsonToString = Convert.jsonIntoString(response);
 	
 	        Gson gson = new Gson();
-	        DollarResponse returnObject = gson.fromJson(jsonEmString, DollarResponse.class);
+	        DollarResponse returnObject = gson.fromJson(jsonToString, DollarResponse.class);
 			
 			return returnObject;
 		} catch(Exception e) {
-			throw new NoSuchMethodException("Access level not found by this ID: ");
+			throw new Exception("Can't access the webpage");
 		}
 	}
 }

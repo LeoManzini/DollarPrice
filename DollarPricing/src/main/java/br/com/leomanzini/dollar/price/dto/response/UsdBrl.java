@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DollarResponse {
+public class UsdBrl {
 	
-	private UsdBrl USDBRL;
+	private String code;
+	private String codein;
+	private String bid;
+	private String timestamp;
+	private String create_date;
 }
