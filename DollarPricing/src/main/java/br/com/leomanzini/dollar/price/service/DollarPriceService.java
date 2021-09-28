@@ -14,6 +14,10 @@ import com.google.gson.reflect.TypeToken;
 
 import br.com.leomanzini.dollar.price.dto.response.HistoryDollarResponse;
 import br.com.leomanzini.dollar.price.dto.response.RealTimeDollarResponse;
+import br.com.leomanzini.dollar.price.enums.ReturnCodes;
+import br.com.leomanzini.dollar.price.exceptions.GeneralException;
+import br.com.leomanzini.dollar.price.exceptions.HistoryDollarPriceException;
+import br.com.leomanzini.dollar.price.exceptions.RealTimeDollarPriceException;
 import br.com.leomanzini.dollar.price.utils.Convert;
 import br.com.leomanzini.dollar.price.utils.PropertiesLoader;
 
@@ -23,56 +27,88 @@ public class DollarPriceService {
 	public RealTimeDollarResponse getRealTimeDollarPrice() throws Exception {
 
 		try {
-			PropertiesLoader.load();
+			loadProperties();
+			
+			HttpURLConnection connection = getServiceConnection(PropertiesLoader.getRealTimeUrl());
 
-			URL url = new URL(PropertiesLoader.getRealTimeUrl());
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			String jsonToString = getServiceString(connection);
 
-			if (connection.getResponseCode() != 200) {
-				throw new RuntimeException("HTTP error code : " + connection.getResponseCode());
-			}
-
-			BufferedReader response = new BufferedReader(new InputStreamReader((connection.getInputStream())));
-			String jsonToString = Convert.jsonIntoString(response);
-
-			Gson gson = new Gson();
-			RealTimeDollarResponse returnObject = gson.fromJson(jsonToString, RealTimeDollarResponse.class);
+			RealTimeDollarResponse returnObject = getGsonRealTimeDollarPriceResponse(jsonToString);
 
 			return returnObject;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Exception("Can't access the webpage");
+			throw new RealTimeDollarPriceException(ReturnCodes.RETURN_REAL_TIME_ERROR.getCode());
 		}
 	}
 
 	public List<HistoryDollarResponse> getHistoryDollarPrice(String day, String month, String year) throws Exception {
 
 		try {
-			PropertiesLoader.load();
+			loadProperties();
 
 			String date = year + month + day;
-
 			String serviceUrl = PropertiesLoader.getHistoryUrl();
 			serviceUrl = String.format(serviceUrl, date);
 
+			HttpURLConnection connection = getServiceConnection(serviceUrl);
+			String jsonToString = getServiceString(connection);
+
+			List<HistoryDollarResponse> returnObject = getGsonHistoryDollarPriceResponse(jsonToString);
+
+			return returnObject;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new HistoryDollarPriceException(ReturnCodes.RETURN_HISTORY_ERROR.getCode());
+		}
+	}
+
+	private void loadProperties() {
+		PropertiesLoader.load();
+	}
+
+	private HttpURLConnection getServiceConnection(String serviceUrl) throws Exception {
+		
+		try {
 			URL url = new URL(serviceUrl);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
+			
 			if (connection.getResponseCode() != 200) {
 				throw new RuntimeException("HTTP error code : " + connection.getResponseCode());
 			}
-
-			BufferedReader response = new BufferedReader(new InputStreamReader((connection.getInputStream())));
-			String jsonToString = Convert.jsonIntoString(response);
-
-			Gson gson = new Gson();
-			Type listType = new TypeToken<List<HistoryDollarResponse>>() {}.getType();
-			List<HistoryDollarResponse> historyDollarResponse = gson.fromJson(jsonToString, listType);
-
-			return historyDollarResponse;
+			
+			return connection;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Exception("Can't access the webpage");
+			throw new GeneralException();
 		}
+	}
+	
+	private String getServiceString(HttpURLConnection connection) throws Exception {
+		
+		try {
+			BufferedReader response = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+			String jsonToString = Convert.jsonIntoString(response);
+			
+			return jsonToString;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new GeneralException();
+		}
+	}
+	
+	private RealTimeDollarResponse getGsonRealTimeDollarPriceResponse(String jsonToString) {
+		Gson gson = new Gson();
+		return gson.fromJson(jsonToString, RealTimeDollarResponse.class);
+	}
+	
+	private List<HistoryDollarResponse> getGsonHistoryDollarPriceResponse(String jsonToString) {
+		Gson gson = new Gson();
+		Type listType = new TypeToken<List<HistoryDollarResponse>>() {}.getType();
+		return gson.fromJson(jsonToString, listType);
 	}
 }
