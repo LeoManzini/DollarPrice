@@ -1,5 +1,7 @@
 package br.com.leomanzini.dollar.price.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +25,7 @@ public class DollarPriceController {
 	}
 
 	@GetMapping("/{day}/{month}/{year}")
-	public HistoryDollarResponse getHistoryDollarPrice(@PathVariable(value = "day") String day,
+	public List<HistoryDollarResponse> getHistoryDollarPrice(@PathVariable(value = "day") String day,
 			@PathVariable(value = "month") String month, @PathVariable(value = "year") String year) throws Exception {
 		return dollarService.getHistoryDollarPrice(day,month,year);
 	}

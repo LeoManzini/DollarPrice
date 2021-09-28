@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HistoryDollarResponse {
+public class HistoryDollarArrayResponse {
 	
-	private String pctChange;
-	private String bid;
-	private String timestamp;
+	private HistoryDollarResponse[] historyDollarResponse;
 }
