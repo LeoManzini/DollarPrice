@@ -9,33 +9,63 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
+import br.com.leomanzini.dollar.price.dto.response.HistoryDollarResponse;
 import br.com.leomanzini.dollar.price.dto.response.RealTimeDollarResponse;
 import br.com.leomanzini.dollar.price.utils.Convert;
 import br.com.leomanzini.dollar.price.utils.PropertiesLoader;
 
 @Service
 public class DollarPriceService {
-	
+
 	public RealTimeDollarResponse getRealTimeDollarPrice() throws Exception {
+
+		try {
+			PropertiesLoader.load();
+
+			URL url = new URL(PropertiesLoader.getRealTimeUrl());
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+			if (connection.getResponseCode() != 200) {
+				throw new RuntimeException("HTTP error code : " + connection.getResponseCode());
+			}
+
+			BufferedReader response = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+			String jsonToString = Convert.jsonIntoString(response);
+
+			Gson gson = new Gson();
+			RealTimeDollarResponse returnObject = gson.fromJson(jsonToString, RealTimeDollarResponse.class);
+
+			return returnObject;
+		} catch (Exception e) {
+			throw new Exception("Can't access the webpage");
+		}
+	}
+
+	public HistoryDollarResponse getHistoryDollarPrice(String day, String month, String year) throws Exception {
 		
 		try {
 			PropertiesLoader.load();
 			
-			URL url = new URL(PropertiesLoader.getRealTimeUrl());
-	        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-	
-	        if (connection.getResponseCode() != 200) {
-	            throw new RuntimeException("HTTP error code : " + connection.getResponseCode());
-	        }
-	
-	        BufferedReader response = new BufferedReader(new InputStreamReader((connection.getInputStream())));
-	        String jsonToString = Convert.jsonIntoString(response);
-	
-	        Gson gson = new Gson();
-	        RealTimeDollarResponse returnObject = gson.fromJson(jsonToString, RealTimeDollarResponse.class);
+			String date = year + month + day;
 			
+			String serviceUrl = PropertiesLoader.getHistoryUrl();
+			serviceUrl = String.format(serviceUrl, date);
+			
+			URL url = new URL(serviceUrl);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+			if (connection.getResponseCode() != 200) {
+				throw new RuntimeException("HTTP error code : " + connection.getResponseCode());
+			}
+
+			BufferedReader response = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+			String jsonToString = Convert.jsonIntoString(response);
+
+			Gson gson = new Gson();
+			HistoryDollarResponse returnObject = gson.fromJson(jsonToString, HistoryDollarResponse.class); //error
+
 			return returnObject;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new Exception("Can't access the webpage");
 		}
 	}
