@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS realtime (
+	quote_id BIGSERIAL PRIMARY KEY,
+	code VARCHAR(3) NOT NULL,
+	codein VARCHAR(3) NOT NULL,
+	price NUMERIC(15,2) NOT NULL,
+    date_time VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS history (
+	quote_id BIGSERIAL PRIMARY KEY,
+	variation NUMERIC(15,2) NOT NULL,
+	price NUMERIC(15,2) NOT NULL,
+    date_time VARCHAR(20) NOT NULL
+);

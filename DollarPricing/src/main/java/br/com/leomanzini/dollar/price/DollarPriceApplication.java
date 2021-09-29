@@ -9,5 +9,4 @@ public class DollarPriceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DollarPriceApplication.class, args);
 	}
-
 }
