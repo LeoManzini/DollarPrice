@@ -1,6 +1,6 @@
 package br.com.leomanzini.dollar.price.utils;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,7 +12,7 @@ public abstract class PropertiesLoader {
 
 	private static final String PROPERTIES_REAL_TIME_URL = "real.time.dollar.price";
 	private static final String PROPERTIES_HISTORY_URL = "history.dollar.price";
-	private static final String PROPERTIES_PATH = "src/main/resources/application.properties";
+	private static final String PROPERTIES_PATH = "/application.properties";
 
 	private static String realTimeUrl;
 	private static String historyUrl;
@@ -25,7 +25,13 @@ public abstract class PropertiesLoader {
 		Properties props = new Properties();
 
 		try {
-			props.load(new FileInputStream(PROPERTIES_PATH));
+			InputStream fins = PropertiesLoader.class.getClassLoader().getResourceAsStream(PROPERTIES_PATH);
+			
+			if(fins!=null) {
+                props.load(fins);
+			}
+			
+			//props.load(new FileInputStream(PROPERTIES_PATH));
 
 			realTimeUrl = props.getProperty(PROPERTIES_REAL_TIME_URL);
 			historyUrl = props.getProperty(PROPERTIES_HISTORY_URL);
