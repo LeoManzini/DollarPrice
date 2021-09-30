@@ -1,1 +1,5 @@
 CREATE DATABASE dollar-prices;
+
+CREATE USER shxselecao WITH ENCRYPTED PASSWORD 'shx123456';
+
+GRANT ALL PRIVILEGES ON DATABASE dollar-prices TO shxselecao;
