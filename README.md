@@ -40,4 +40,20 @@ based on the environment that the code is running, at this case I used only the 
 After the project is up, you can access the features with this endpoint to the real time dollar price ```http://localhost:8080/price```, and the history feature at the 
 same endpoint, but passing a data to search ```http://localhost:8080/price/dd/mm/aaaa```.
 
-TODO INSERT ENDPOINTS PRINTSCREEN
+![real-time-endpoint](https://user-images.githubusercontent.com/39606289/135368803-0f14168b-3cc2-4882-b737-985aca652744.png)
+
+![history-endpoint](https://user-images.githubusercontent.com/39606289/135368861-5adf0a80-9797-4fa9-a4e0-e597aed994e0.png)
+
+To run at the IDE, remember to uncomment the lines below, these lines made the Java use the correct path to access the properties.
+
+![properties](https://user-images.githubusercontent.com/39606289/135369078-e0a3e42a-7c7f-47d0-aeac-f0f41d7a7917.png)
+
+### Runnig from binary file
+
+This step can only be made, once that the code has been compiled, like told at the ```Compiling``` section.
+
+To execute the code from the terminal, use the command line ```java -jar DollarPrice.jar```, this will start the service.
+
+![terminal](https://user-images.githubusercontent.com/39606289/135369365-042c3619-7771-4485-b76b-c83e55d610fb.png)
+
+The endpoints and so on, works as the same the IDE execution.
