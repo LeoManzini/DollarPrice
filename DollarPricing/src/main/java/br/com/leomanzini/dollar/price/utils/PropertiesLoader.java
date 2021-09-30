@@ -13,6 +13,8 @@ public abstract class PropertiesLoader {
 	private static final String PROPERTIES_REAL_TIME_URL = "real.time.dollar.price";
 	private static final String PROPERTIES_HISTORY_URL = "history.dollar.price";
 	private static final String PROPERTIES_PATH = "/application.properties";
+	
+	//private static final String PROPERTIES_IDE_PATH = "src/main/resources/application.properties";
 
 	private static String realTimeUrl;
 	private static String historyUrl;
@@ -31,7 +33,7 @@ public abstract class PropertiesLoader {
                 props.load(fins);
 			}
 			
-			//props.load(new FileInputStream(PROPERTIES_PATH));
+			//props.load(new FileInputStream(PROPERTIES_IDE_PATH));
 
 			realTimeUrl = props.getProperty(PROPERTIES_REAL_TIME_URL);
 			historyUrl = props.getProperty(PROPERTIES_HISTORY_URL);
