@@ -63,6 +63,6 @@ The endpoints and so on, works as the same the IDE execution.
 All the data received from requests are persisted at PostgreSql database, the script to create the database and user that we used on this code are at the folder 
 ```DatabaseScripts``` and at the file ```create-database```. Execute the same commands at PostgreSql plsql terminal, and our database is working and the data being persisted.
 
-![database-script](https://user-images.githubusercontent.com/39606289/135371018-d4ed0886-191a-4955-86e5-dd5c1d811a80.png)
+![database-script](https://user-images.githubusercontent.com/39606289/135371345-e1e743ff-17a6-42e9-821a-af0c5a39b2d0.png)
 
 ![java-configurations](https://user-images.githubusercontent.com/39606289/135371063-ae45d185-ee37-4e6a-aeb4-02296258b276.png)
