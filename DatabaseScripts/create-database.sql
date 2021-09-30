@@ -1,5 +1,5 @@
-CREATE DATABASE dollar-prices;
+CREATE DATABASE dollarprices;
 
 CREATE USER shxselecao WITH ENCRYPTED PASSWORD 'shx123456';
 
-GRANT ALL PRIVILEGES ON DATABASE dollar-prices TO shxselecao;
+GRANT ALL PRIVILEGES ON DATABASE dollarprices TO shxselecao;
